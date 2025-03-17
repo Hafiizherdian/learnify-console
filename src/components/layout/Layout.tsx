@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { useIsMobile } from '@/hooks/use-mobile';
+import ServiceRouter from '@/services/ServiceRouter';
 
 const getPageTitle = (pathname: string): string => {
   switch(pathname) {
@@ -51,7 +52,7 @@ const Layout = () => {
         <Header title={pageTitle} />
         
         <main className="flex-1 overflow-y-auto p-6">
-          <Outlet />
+          <ServiceRouter />
         </main>
       </div>
     </div>
