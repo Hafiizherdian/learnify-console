@@ -1,0 +1,78 @@
+
+# Microservices Backend untuk Learnify
+
+## Struktur Microservices
+
+Proyek ini terdiri dari tiga microservices independen:
+
+1. **Dashboard Service** (port 3001)
+   - Menyediakan data statistik dan analitik untuk dashboard
+   - API endpoint: `http://localhost:3001/api/dashboard/*`
+
+2. **Question Bank Service** (port 3002)
+   - Mengelola penyimpanan dan pengambilan data pertanyaan
+   - API endpoint: `http://localhost:3002/api/questions`
+
+3. **Question Creator Service** (port 3003)
+   - Menangani pembuatan pertanyaan baru
+   - API endpoint: `http://localhost:3003/api/*`
+
+## Cara Menjalankan
+
+### Prasyarat
+- Node.js (v14 atau lebih tinggi)
+- npm (v6 atau lebih tinggi)
+
+### Instalasi
+
+```bash
+# Masuk ke direktori server
+cd server
+
+# Install dependencies
+npm install
+```
+
+### Menjalankan Microservices
+
+#### Menjalankan semua service sekaligus:
+
+```bash
+npm run start:all
+```
+
+#### Menjalankan service secara terpisah:
+
+```bash
+# Dashboard Service
+npm run start:dashboard
+
+# Question Bank Service
+npm run start:questions
+
+# Question Creator Service
+npm run start:creator
+```
+
+## API Endpoints
+
+### Dashboard Service
+
+- `GET /api/dashboard/stats` - Mendapatkan statistik dashboard
+- `GET /api/dashboard/activity` - Mendapatkan data aktivitas
+- `GET /api/dashboard/categories` - Mendapatkan distribusi kategori
+- `GET /api/dashboard/recent-questions` - Mendapatkan pertanyaan terbaru
+
+### Question Bank Service
+
+- `GET /api/questions` - Mendapatkan semua pertanyaan
+- `GET /api/questions/:id` - Mendapatkan pertanyaan berdasarkan ID
+- `POST /api/questions` - Membuat pertanyaan baru
+- `PUT /api/questions/:id` - Memperbarui pertanyaan
+- `DELETE /api/questions/:id` - Menghapus pertanyaan
+
+### Question Creator Service
+
+- `POST /api/create` - Membuat pertanyaan baru (proxy ke Question Bank)
+- `GET /api/categories` - Mendapatkan daftar kategori yang tersedia
+- `GET /api/difficulties` - Mendapatkan daftar tingkat kesulitan yang tersedia

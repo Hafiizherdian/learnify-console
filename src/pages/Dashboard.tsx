@@ -1,38 +1,62 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import StatsCard from '@/components/dashboard/StatsCard';
 import ActivityChart from '@/components/dashboard/ActivityChart';
 import CategoryDistribution from '@/components/dashboard/CategoryDistribution';
 import RecentQuestions from '@/components/dashboard/RecentQuestions';
 import { FileQuestion, PieChart, Brain, Target } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { getDashboardStats, DashboardStats } from '@/services/data/api';
+import { useQuery } from '@tanstack/react-query';
 
 const Dashboard = () => {
+  const { toast } = useToast();
+  
+  // Menggunakan React Query untuk mengambil data statistik dashboard
+  const { data: statsData, isLoading, error } = useQuery({
+    queryKey: ['dashboardStats'],
+    queryFn: getDashboardStats,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // Data dianggap segar selama 5 menit
+  });
+
+  // Menampilkan error toast jika terjadi kesalahan
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: 'Terjadi Kesalahan',
+        description: 'Gagal memuat data dashboard. Menggunakan data sampel.',
+        variant: 'destructive',
+      });
+    }
+  }, [error, toast]);
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard 
-          title="Total Questions" 
-          value="245" 
+          title="Total Pertanyaan" 
+          value={isLoading ? "..." : statsData?.totalQuestions.toString() || "245"} 
           icon={<FileQuestion className="h-5 w-5" />}
           trend={{ value: 12, isPositive: true }}
         />
         <StatsCard 
-          title="Categories" 
-          value="18" 
+          title="Kategori" 
+          value={isLoading ? "..." : statsData?.categories.toString() || "18"} 
           icon={<PieChart className="h-5 w-5" />}
           trend={{ value: 5, isPositive: true }}
         />
         <StatsCard 
-          title="AI Generated" 
-          value="78" 
+          title="Dibuat oleh AI" 
+          value={isLoading ? "..." : statsData?.aiGenerated.toString() || "78"} 
           icon={<Brain className="h-5 w-5" />}
-          description="32% of total questions"
+          description="32% dari total pertanyaan"
         />
         <StatsCard 
-          title="Difficulty Levels" 
-          value="3" 
+          title="Tingkat Kesulitan" 
+          value={isLoading ? "..." : statsData?.difficultyLevels.toString() || "3"} 
           icon={<Target className="h-5 w-5" />}
-          description="Easy, Medium, Hard"
+          description="Mudah, Sedang, Sulit"
         />
       </div>
       

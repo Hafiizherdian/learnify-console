@@ -1,53 +1,87 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getCategoryData } from '@/services/data/api';
 
-const data = [
-  { name: 'Mathematics', value: 35, color: '#3B82F6' },
-  { name: 'Science', value: 25, color: '#10B981' },
-  { name: 'Language', value: 20, color: '#F59E0B' },
-  { name: 'History', value: 15, color: '#8B5CF6' },
-  { name: 'Other', value: 5, color: '#6B7280' },
-];
+const COLORS = ['#4C6FFF', '#36B37E', '#FFAB00', '#FF5630', '#6554C0'];
+
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-2 border border-gray-200 rounded shadow-sm text-xs">
+        <p className="font-semibold">{`${payload[0].name}: ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomLegend = ({ payload }: any) => {
+  return (
+    <ul className="flex flex-col gap-1 text-xs">
+      {payload.map((entry: any, index: number) => (
+        <li key={`item-${index}`} className="flex items-center">
+          <div 
+            className="w-3 h-3 rounded-full mr-2" 
+            style={{ backgroundColor: entry.color }}
+          />
+          <span className="text-gray-700">{entry.value}</span>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 const CategoryDistribution = () => {
+  const { data: categoryData, isLoading, error } = useQuery({
+    queryKey: ['categoryData'],
+    queryFn: getCategoryData,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // Data dianggap segar selama 5 menit
+  });
+
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold">Categories</CardTitle>
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold">Distribusi Kategori</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[240px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={80}
-                paddingAngle={2}
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                labelLine={false}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip 
-                formatter={(value: number) => [`${value}%`, 'Percentage']}
-                contentStyle={{ 
-                  backgroundColor: 'white', 
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+          </div>
+        ) : error ? (
+          <div className="flex justify-center items-center h-64 text-gray-500">
+            Gagal memuat data kategori
+          </div>
+        ) : (
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  paddingAngle={2}
+                  dataKey="value"
+                  nameKey="name"
+                >
+                  {categoryData?.map((entry: any, index: number) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+                <Legend content={<CustomLegend />} layout="vertical" verticalAlign="middle" align="right" />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
