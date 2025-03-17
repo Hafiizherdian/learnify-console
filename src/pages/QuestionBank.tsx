@@ -64,7 +64,7 @@ const QuestionBank = () => {
         console.error('Error parsing questions:', error);
         toast({
           title: 'Error',
-          description: 'Failed to load questions.',
+          description: 'Gagal memuat pertanyaan.',
           variant: 'destructive',
         });
       }
@@ -96,14 +96,14 @@ const QuestionBank = () => {
     localStorage.setItem('questions', JSON.stringify(updatedQuestions));
     
     toast({
-      title: 'Question Deleted',
-      description: 'The question has been deleted successfully.',
+      title: 'Pertanyaan Dihapus',
+      description: 'Pertanyaan telah berhasil dihapus.',
     });
   };
 
   // Format date for display
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('en-US', {
+    return new Date(date).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -114,11 +114,11 @@ const QuestionBank = () => {
   const getQuestionTypeText = (type: string) => {
     switch (type) {
       case 'multipleChoice':
-        return 'Multiple Choice';
+        return 'Pilihan Ganda';
       case 'trueFalse':
-        return 'True/False';
+        return 'Benar/Salah';
       case 'openEnded':
-        return 'Open-Ended';
+        return 'Uraian';
       default:
         return type;
     }
@@ -127,26 +127,26 @@ const QuestionBank = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <h1 className="text-2xl font-bold text-gray-800">Question Bank</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Bank Pertanyaan</h1>
         <Button 
           className="flex items-center gap-2"
           onClick={() => navigate('/create')}
         >
           <PlusCircle className="h-4 w-4" />
-          <span>Create Question</span>
+          <span>Buat Pertanyaan</span>
         </Button>
       </div>
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle>Search & Filter</CardTitle>
+          <CardTitle>Cari & Filter</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search questions..."
+                placeholder="Cari pertanyaan..."
                 className="pl-8"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -156,40 +156,40 @@ const QuestionBank = () => {
             <div className="flex flex-wrap gap-2">
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Category" />
+                  <SelectValue placeholder="Kategori" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="mathematics">Mathematics</SelectItem>
-                  <SelectItem value="science">Science</SelectItem>
-                  <SelectItem value="language">Language</SelectItem>
-                  <SelectItem value="history">History</SelectItem>
-                  <SelectItem value="geography">Geography</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="all">Semua Kategori</SelectItem>
+                  <SelectItem value="mathematics">Matematika</SelectItem>
+                  <SelectItem value="science">Sains</SelectItem>
+                  <SelectItem value="language">Bahasa</SelectItem>
+                  <SelectItem value="history">Sejarah</SelectItem>
+                  <SelectItem value="geography">Geografi</SelectItem>
+                  <SelectItem value="other">Lainnya</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
                 <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Difficulty" />
+                  <SelectValue placeholder="Kesulitan" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Difficulties</SelectItem>
-                  <SelectItem value="easy">Easy</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="hard">Hard</SelectItem>
+                  <SelectItem value="all">Semua Tingkat</SelectItem>
+                  <SelectItem value="easy">Mudah</SelectItem>
+                  <SelectItem value="medium">Sedang</SelectItem>
+                  <SelectItem value="hard">Sulit</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={typeFilter} onValueChange={setTypeFilter}>
                 <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="Type" />
+                  <SelectValue placeholder="Tipe" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="multipleChoice">Multiple Choice</SelectItem>
-                  <SelectItem value="trueFalse">True/False</SelectItem>
-                  <SelectItem value="openEnded">Open-Ended</SelectItem>
+                  <SelectItem value="all">Semua Tipe</SelectItem>
+                  <SelectItem value="multipleChoice">Pilihan Ganda</SelectItem>
+                  <SelectItem value="trueFalse">Benar/Salah</SelectItem>
+                  <SelectItem value="openEnded">Uraian</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -202,12 +202,12 @@ const QuestionBank = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[40%]">Question</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Difficulty</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="w-[40%]">Pertanyaan</TableHead>
+                <TableHead>Tipe</TableHead>
+                <TableHead>Kategori</TableHead>
+                <TableHead>Kesulitan</TableHead>
+                <TableHead>Dibuat</TableHead>
+                <TableHead className="text-right">Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -216,7 +216,7 @@ const QuestionBank = () => {
                   <TableCell colSpan={6} className="text-center py-8 text-gray-500">
                     {questions.length === 0 ? (
                       <div className="flex flex-col items-center gap-2">
-                        <p>No questions found. Create your first question!</p>
+                        <p>Belum ada pertanyaan. Buat pertanyaan pertama Anda!</p>
                         <Button 
                           variant="outline" 
                           size="sm" 
@@ -224,11 +224,11 @@ const QuestionBank = () => {
                           className="mt-2"
                         >
                           <PlusCircle className="h-4 w-4 mr-2" />
-                          Create Question
+                          Buat Pertanyaan
                         </Button>
                       </div>
                     ) : (
-                      "No questions match your search criteria."
+                      "Tidak ada pertanyaan yang sesuai dengan kriteria pencarian Anda."
                     )}
                   </TableCell>
                 </TableRow>
@@ -245,7 +245,7 @@ const QuestionBank = () => {
                         ))}
                         {question.tags.length > 3 && (
                           <Badge variant="outline" className="text-xs">
-                            +{question.tags.length - 3} more
+                            +{question.tags.length - 3} lainnya
                           </Badge>
                         )}
                       </div>
@@ -265,22 +265,25 @@ const QuestionBank = () => {
                           'bg-red-100 text-red-800'
                         }
                       >
-                        {question.difficulty}
+                        {question.difficulty === 'easy' ? 'Mudah' :
+                         question.difficulty === 'medium' ? 'Sedang' :
+                         'Sulit'}
                       </Badge>
                     </TableCell>
                     <TableCell>{formatDate(question.createdAt)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" title="Lihat">
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" title="Edit">
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="icon"
                           onClick={() => handleDeleteQuestion(question.id)}
+                          title="Hapus"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
