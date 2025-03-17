@@ -9,8 +9,16 @@ import Dashboard from "@/pages/Dashboard";
 import QuestionBank from "@/pages/QuestionBank";
 import CreateQuestion from "@/pages/CreateQuestion";
 import NotFound from "@/pages/NotFound";
+import Index from "@/pages/Index";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -20,7 +28,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Index />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="questions" element={<QuestionBank />} />
             <Route path="create" element={<CreateQuestion />} />

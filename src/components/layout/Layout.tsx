@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import { useLocation } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const getPageTitle = (pathname: string): string => {
   switch(pathname) {
+    case '/':
     case '/dashboard':
       return 'Dashboard';
     case '/create':
@@ -21,7 +22,23 @@ const getPageTitle = (pathname: string): string => {
 const Layout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const pageTitle = getPageTitle(location.pathname);
+
+  // Auto-collapse sidebar on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarCollapsed(true);
+    }
+  }, [isMobile]);
+
+  // Handle navigation from index to dashboard
+  useEffect(() => {
+    if (location.pathname === '/') {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <div className="flex h-screen bg-gray-50">
