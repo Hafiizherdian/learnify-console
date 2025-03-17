@@ -79,8 +79,8 @@ const CreateQuestion = () => {
     // If switching to true/false, reset options
     if (newType === 'trueFalse') {
       newOptions = [
-        { id: 'true', text: 'True', isCorrect: true },
-        { id: 'false', text: 'False', isCorrect: false },
+        { id: 'true', text: 'Benar', isCorrect: true },
+        { id: 'false', text: 'Salah', isCorrect: false },
       ];
     } 
     // If switching to multiple choice from true/false, reset options
@@ -120,8 +120,8 @@ const CreateQuestion = () => {
   const removeOption = (id: string) => {
     if (questionData.options.length <= 2) {
       toast({
-        title: "Cannot remove option",
-        description: "At least two options are required.",
+        title: "Tidak dapat menghapus pilihan",
+        description: "Minimal dua pilihan diperlukan.",
         variant: "destructive",
       });
       return;
@@ -161,8 +161,8 @@ const CreateQuestion = () => {
       ...questionData,
       trueAnswer: isTrue,
       options: [
-        { id: 'true', text: 'True', isCorrect: isTrue },
-        { id: 'false', text: 'False', isCorrect: !isTrue },
+        { id: 'true', text: 'Benar', isCorrect: isTrue },
+        { id: 'false', text: 'Salah', isCorrect: !isTrue },
       ]
     });
   };
@@ -212,14 +212,14 @@ const CreateQuestion = () => {
   // AI generation function (mock for now)
   const handleGenerateQuestion = () => {
     toast({
-      title: "AI Question Generation",
-      description: "Generating question based on your parameters...",
+      title: "Generasi Pertanyaan dengan AI",
+      description: "Menghasilkan pertanyaan berdasarkan parameter Anda...",
     });
     
     // Simulate AI generating a question after a delay
     setTimeout(() => {
       const generatedQuestion: QuestionData = {
-        text: "What is the result of 3 + 4 × 2?",
+        text: "Berapakah hasil dari 3 + 4 × 2?",
         type: "multipleChoice",
         options: [
           { id: "1", text: "14", isCorrect: false },
@@ -227,19 +227,19 @@ const CreateQuestion = () => {
           { id: "3", text: "10", isCorrect: false },
           { id: "4", text: "7", isCorrect: false }
         ],
-        explanation: "According to the order of operations (PEMDAS), multiplication is performed before addition. So, 4 × 2 = 8, then 3 + 8 = 11.",
+        explanation: "Sesuai dengan urutan operasi (PEMDAS), perkalian dilakukan sebelum penjumlahan. Jadi, 4 × 2 = 8, kemudian 3 + 8 = 11.",
         category: "mathematics",
-        subcategory: "Arithmetic",
+        subcategory: "Aritmatika",
         difficulty: "easy",
         points: 1,
-        tags: ["arithmetic", "order of operations", "basic math"],
+        tags: ["aritmatika", "urutan operasi", "matematika dasar"],
       };
       
       setQuestionData(generatedQuestion);
       
       toast({
-        title: "Question Generated",
-        description: "AI has generated a sample question for you.",
+        title: "Pertanyaan Dihasilkan",
+        description: "AI telah menghasilkan contoh pertanyaan untuk Anda.",
       });
     }, 1500);
   };
@@ -249,8 +249,8 @@ const CreateQuestion = () => {
     // Basic validation
     if (!questionData.text.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Question text is required.",
+        title: "Error Validasi",
+        description: "Teks pertanyaan diperlukan.",
         variant: "destructive",
       });
       return;
@@ -261,8 +261,8 @@ const CreateQuestion = () => {
       const hasEmptyOption = questionData.options.some(option => !option.text.trim());
       if (hasEmptyOption) {
         toast({
-          title: "Validation Error",
-          description: "All options must have text.",
+          title: "Error Validasi",
+          description: "Semua pilihan harus memiliki teks.",
           variant: "destructive",
         });
         return;
@@ -272,8 +272,8 @@ const CreateQuestion = () => {
       const hasCorrectOption = questionData.options.some(option => option.isCorrect);
       if (!hasCorrectOption) {
         toast({
-          title: "Validation Error",
-          description: "At least one option must be marked as correct.",
+          title: "Error Validasi",
+          description: "Setidaknya satu pilihan harus ditandai sebagai benar.",
           variant: "destructive",
         });
         return;
@@ -292,8 +292,8 @@ const CreateQuestion = () => {
     localStorage.setItem('questions', JSON.stringify([...existingQuestions, savedQuestion]));
     
     toast({
-      title: "Question Saved",
-      description: "Your question has been saved successfully.",
+      title: "Pertanyaan Disimpan",
+      description: "Pertanyaan Anda telah berhasil disimpan.",
     });
     
     // Reset form or navigate to question bank
@@ -320,7 +320,7 @@ const CreateQuestion = () => {
     if (!questionData.text) {
       return (
         <p className="text-sm text-gray-500 italic">
-          Question preview will appear here as you type...
+          Pratinjau pertanyaan akan muncul di sini saat Anda mengetik...
         </p>
       );
     }
@@ -334,7 +334,7 @@ const CreateQuestion = () => {
             {questionData.options.map(option => (
               <div key={option.id} className="flex items-center gap-2">
                 <div className={`w-4 h-4 rounded-full border ${option.isCorrect ? 'bg-green-500 border-green-600' : 'border-gray-300'}`}></div>
-                <span>{option.text || `[Option ${option.id}]`}</span>
+                <span>{option.text || `[Pilihan ${option.id}]`}</span>
               </div>
             ))}
           </div>
@@ -344,24 +344,24 @@ const CreateQuestion = () => {
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className={`w-4 h-4 rounded-full border ${questionData.trueAnswer ? 'bg-green-500 border-green-600' : 'border-gray-300'}`}></div>
-              <span>True</span>
+              <span>Benar</span>
             </div>
             <div className="flex items-center gap-2">
               <div className={`w-4 h-4 rounded-full border ${!questionData.trueAnswer ? 'bg-green-500 border-green-600' : 'border-gray-300'}`}></div>
-              <span>False</span>
+              <span>Salah</span>
             </div>
           </div>
         )}
         
         {questionData.type === 'openEnded' && (
           <div className="border border-dashed border-gray-300 p-3 rounded-md">
-            <p className="text-sm text-gray-500">Open-ended response area</p>
+            <p className="text-sm text-gray-500">Area respons terbuka</p>
           </div>
         )}
         
         {questionData.explanation && (
           <div className="mt-4 p-3 bg-blue-50 rounded-md">
-            <p className="text-sm font-medium text-blue-800">Explanation:</p>
+            <p className="text-sm font-medium text-blue-800">Penjelasan:</p>
             <p className="text-sm text-blue-700">{questionData.explanation}</p>
           </div>
         )}
@@ -380,7 +380,7 @@ const CreateQuestion = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">Create New Question</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Buat Pertanyaan Baru</h2>
         <div className="flex gap-2">
           <Button 
             variant="outline"
@@ -388,7 +388,7 @@ const CreateQuestion = () => {
             onClick={handleGenerateQuestion}
           >
             <Wand2 className="h-4 w-4" />
-            <span>Generate with AI</span>
+            <span>Hasilkan dengan AI</span>
           </Button>
           <Button 
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
@@ -396,7 +396,7 @@ const CreateQuestion = () => {
             disabled={!isValid}
           >
             <Save className="h-4 w-4" />
-            <span>Save</span>
+            <span>Simpan</span>
           </Button>
         </div>
       </div>
@@ -405,14 +405,14 @@ const CreateQuestion = () => {
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Question Details</CardTitle>
+              <CardTitle className="text-lg">Detail Pertanyaan</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="question">Question Text</Label>
+                <Label htmlFor="question">Teks Pertanyaan</Label>
                 <Textarea 
                   id="question" 
-                  placeholder="Enter your question here..." 
+                  placeholder="Masukkan pertanyaan Anda di sini..." 
                   className="min-h-[100px]"
                   value={questionData.text}
                   onChange={handleQuestionTextChange}
@@ -420,21 +420,21 @@ const CreateQuestion = () => {
               </div>
               
               <div className="space-y-2">
-                <Label>Question Type</Label>
+                <Label>Jenis Pertanyaan</Label>
                 <Tabs 
                   value={questionData.type} 
                   onValueChange={handleQuestionTypeChange} 
                   className="w-full"
                 >
                   <TabsList className="grid grid-cols-3 w-full">
-                    <TabsTrigger value="multipleChoice">Multiple Choice</TabsTrigger>
-                    <TabsTrigger value="trueFalse">True/False</TabsTrigger>
-                    <TabsTrigger value="openEnded">Open-Ended</TabsTrigger>
+                    <TabsTrigger value="multipleChoice">Pilihan Ganda</TabsTrigger>
+                    <TabsTrigger value="trueFalse">Benar/Salah</TabsTrigger>
+                    <TabsTrigger value="openEnded">Terbuka</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="multipleChoice" className="space-y-4 pt-4">
                     <div className="space-y-4">
-                      <Label>Answer Options</Label>
+                      <Label>Pilihan Jawaban</Label>
                       {questionData.options.map((option) => (
                         <div key={option.id} className="flex items-center gap-3">
                           <RadioGroup 
@@ -446,7 +446,7 @@ const CreateQuestion = () => {
                           </RadioGroup>
                           
                           <Input 
-                            placeholder={`Option ${option.id}`}
+                            placeholder={`Pilihan ${option.id}`}
                             value={option.text}
                             onChange={(e) => handleOptionChange(option.id, e.target.value)}
                             className="flex-1"
@@ -470,25 +470,25 @@ const CreateQuestion = () => {
                         type="button"
                       >
                         <PlusCircle className="h-4 w-4" />
-                        <span>Add Option</span>
+                        <span>Tambah Pilihan</span>
                       </Button>
                     </div>
                   </TabsContent>
                   
                   <TabsContent value="trueFalse" className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label>Correct Answer</Label>
+                      <Label>Jawaban Benar</Label>
                       <RadioGroup 
                         value={questionData.trueAnswer ? 'true' : 'false'} 
                         onValueChange={handleTrueFalseChange}
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="true" id="true" />
-                          <Label htmlFor="true">True</Label>
+                          <Label htmlFor="true">Benar</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="false" id="false" />
-                          <Label htmlFor="false">False</Label>
+                          <Label htmlFor="false">Salah</Label>
                         </div>
                       </RadioGroup>
                     </div>
@@ -496,10 +496,10 @@ const CreateQuestion = () => {
                   
                   <TabsContent value="openEnded" className="space-y-4 pt-4">
                     <div className="space-y-2">
-                      <Label htmlFor="answer">Model Answer (Optional)</Label>
+                      <Label htmlFor="answer">Jawaban Model (Opsional)</Label>
                       <Textarea 
                         id="answer" 
-                        placeholder="Enter a model answer or scoring guide..." 
+                        placeholder="Masukkan jawaban model atau panduan penilaian..." 
                         className="min-h-[100px]"
                         value={questionData.modelAnswer || ''}
                         onChange={handleModelAnswerChange}
@@ -513,11 +513,11 @@ const CreateQuestion = () => {
           
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Explanation (Optional)</CardTitle>
+              <CardTitle className="text-lg">Penjelasan (Opsional)</CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea 
-                placeholder="Provide an explanation for this question..." 
+                placeholder="Berikan penjelasan untuk pertanyaan ini..." 
                 className="min-h-[100px]"
                 value={questionData.explanation}
                 onChange={handleExplanationChange}
@@ -529,58 +529,58 @@ const CreateQuestion = () => {
         <div className="space-y-6">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Question Settings</CardTitle>
+              <CardTitle className="text-lg">Pengaturan Pertanyaan</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="category">Kategori</Label>
                 <Select 
                   value={questionData.category}
                   onValueChange={handleCategoryChange}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="mathematics">Mathematics</SelectItem>
-                    <SelectItem value="science">Science</SelectItem>
-                    <SelectItem value="language">Language</SelectItem>
-                    <SelectItem value="history">History</SelectItem>
-                    <SelectItem value="geography">Geography</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="mathematics">Matematika</SelectItem>
+                    <SelectItem value="science">Sains</SelectItem>
+                    <SelectItem value="language">Bahasa</SelectItem>
+                    <SelectItem value="history">Sejarah</SelectItem>
+                    <SelectItem value="geography">Geografi</SelectItem>
+                    <SelectItem value="other">Lainnya</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="subcategory">Subcategory (Optional)</Label>
+                <Label htmlFor="subcategory">Subkategori (Opsional)</Label>
                 <Input 
                   id="subcategory" 
-                  placeholder="E.g., Algebra, World History" 
+                  placeholder="Mis. Aljabar, Sejarah Dunia" 
                   value={questionData.subcategory}
                   onChange={handleSubcategoryChange}
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="difficulty">Difficulty Level</Label>
+                <Label htmlFor="difficulty">Tingkat Kesulitan</Label>
                 <Select 
                   value={questionData.difficulty}
                   onValueChange={handleDifficultyChange}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select difficulty" />
+                    <SelectValue placeholder="Pilih kesulitan" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="easy">Easy</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
+                    <SelectItem value="easy">Mudah</SelectItem>
+                    <SelectItem value="medium">Sedang</SelectItem>
+                    <SelectItem value="hard">Sulit</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="points">Points</Label>
+                <Label htmlFor="points">Poin</Label>
                 <Input 
                   id="points" 
                   type="number" 
@@ -592,10 +592,10 @@ const CreateQuestion = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="tags">Tags (Comma separated)</Label>
+                <Label htmlFor="tags">Tag (Dipisahkan koma)</Label>
                 <Input 
                   id="tags" 
-                  placeholder="E.g., exam, practice, chapter1" 
+                  placeholder="Mis. ujian, latihan, bab1" 
                   value={questionData.tags.join(', ')}
                   onChange={handleTagsChange}
                 />
@@ -607,7 +607,7 @@ const CreateQuestion = () => {
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center gap-2">
                 <BookOpen className="h-4 w-4" />
-                <span>Preview</span>
+                <span>Pratinjau</span>
               </CardTitle>
             </CardHeader>
             <CardContent>

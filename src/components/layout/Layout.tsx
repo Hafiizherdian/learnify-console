@@ -9,11 +9,11 @@ const getPageTitle = (pathname: string): string => {
   switch(pathname) {
     case '/':
     case '/dashboard':
-      return 'Dashboard';
+      return 'Dasbor';
     case '/create':
-      return 'Create Question';
+      return 'Buat Pertanyaan';
     case '/questions':
-      return 'Question Bank';
+      return 'Bank Pertanyaan';
     default:
       return 'Learnify';
   }

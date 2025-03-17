@@ -97,17 +97,17 @@ const Sidebar = ({ collapsed, toggleSidebar }: SidebarProps) => {
             <NavItem 
               to="/dashboard" 
               icon={<LayoutDashboard className="h-5 w-5" />} 
-              label="Dashboard" 
+              label="Dasbor" 
             />
             <NavItem 
               to="/create" 
               icon={<ListPlus className="h-5 w-5" />} 
-              label="Create Question" 
+              label="Buat Pertanyaan" 
             />
             <NavItem 
               to="/questions" 
               icon={<Library className="h-5 w-5" />} 
-              label="Question Bank" 
+              label="Bank Pertanyaan" 
             />
           </>
         )}
@@ -124,7 +124,7 @@ const Sidebar = ({ collapsed, toggleSidebar }: SidebarProps) => {
           <div className="flex items-center gap-3 px-3 py-2">
             <UserCircle className="h-5 w-5 text-gray-500" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-700 truncate">User Account</p>
+              <p className="text-sm font-medium text-gray-700 truncate">Akun Pengguna</p>
             </div>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Settings className="h-4 w-4 text-gray-500" />
