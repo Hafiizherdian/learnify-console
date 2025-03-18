@@ -14,6 +14,7 @@ app.use(express.json());
 // Endpoint untuk menyimpan pertanyaan baru (proxy ke question bank service)
 app.post('/api/create', async (req, res) => {
   try {
+    console.log(`Mengirim pertanyaan baru ke ${QUESTIONS_SERVICE_URL}/api/questions`);
     // Forward request to Question Bank service
     const response = await axios.post(`${QUESTIONS_SERVICE_URL}/api/questions`, req.body);
     res.status(201).json(response.data);
@@ -55,5 +56,5 @@ app.get('/api/difficulties', (req, res) => {
 // Server start
 app.listen(PORT, () => {
   console.log(`Question Creator Microservice berjalan di port ${PORT}`);
-  console.log(`Connected to Question Bank service at: ${QUESTIONS_SERVICE_URL}`);
+  console.log(`Terhubung ke Question Bank service di: ${QUESTIONS_SERVICE_URL}`);
 });

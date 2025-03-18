@@ -12,6 +12,8 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3001
+    networks:
+      - learnify-network
 
   questions-service:
     build: ./server/questions
@@ -23,18 +25,22 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3002
+    networks:
+      - learnify-network
 
   creator-service:
     build: ./server/creator
     ports:
       - "3003:3003"
     volumes:
-      - ./server/questions:/app/questions
       - ./server/creator:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
       - PORT=3003
+      - QUESTIONS_SERVICE_URL=http://questions-service:3002
+    networks:
+      - learnify-network
     depends_on:
       - questions-service
 
@@ -47,7 +53,16 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - VITE_DASHBOARD_API=http://localhost:3001/api/dashboard
+      - VITE_QUESTIONS_API=http://localhost:3002/api/questions
+      - VITE_CREATOR_API=http://localhost:3003/api
+    networks:
+      - learnify-network
     depends_on:
       - dashboard-service
       - questions-service
       - creator-service
+
+networks:
+  learnify-network:
+    driver: bridge
