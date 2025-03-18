@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
@@ -107,7 +108,11 @@ app.delete('/api/questions/:id', (req, res) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', service: 'question-bank' });
+  res.status(200).json({ 
+    status: 'ok', 
+    service: 'question-bank',
+    database: DB_PATH
+  });
 });
 
 // Server start

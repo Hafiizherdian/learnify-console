@@ -1,10 +1,14 @@
+
 import axios from 'axios';
 
 // API URLs for microservices using environment variables from Vite
-const DASHBOARD_API = import.meta.env.VITE_DASHBOARD_API || 'http://localhost:3001/api/dashboard';
-const QUESTIONS_API = import.meta.env.VITE_QUESTIONS_API || 'http://localhost:3002/api/questions';
-const CREATOR_API = import.meta.env.VITE_CREATOR_API || 'http://localhost:3003/api';
+const API_GATEWAY = import.meta.env.VITE_API_GATEWAY || 'http://localhost:3000/api';
 
+const DASHBOARD_API = `${API_GATEWAY}/dashboard`;
+const QUESTIONS_API = `${API_GATEWAY}/questions`;
+const CREATOR_API = `${API_GATEWAY}/creator`;
+
+console.log('API Gateway URL:', API_GATEWAY);
 console.log('Dashboard API URL:', DASHBOARD_API);
 console.log('Questions API URL:', QUESTIONS_API);
 console.log('Creator API URL:', CREATOR_API);
@@ -26,32 +30,12 @@ const creatorApiClient = axios.create({
 });
 
 // Health check functions
-export const checkDashboardHealth = async (): Promise<boolean> => {
+export const checkGatewayHealth = async (): Promise<boolean> => {
   try {
-    const response = await axios.get(`${DASHBOARD_API.replace('/api/dashboard', '')}/health`);
+    const response = await axios.get(`${API_GATEWAY.replace('/api', '')}/health`);
     return response.status === 200;
   } catch (error) {
-    console.error('Dashboard service health check failed:', error);
-    return false;
-  }
-};
-
-export const checkQuestionsHealth = async (): Promise<boolean> => {
-  try {
-    const response = await axios.get(`${QUESTIONS_API.replace('/api/questions', '')}/health`);
-    return response.status === 200;
-  } catch (error) {
-    console.error('Questions service health check failed:', error);
-    return false;
-  }
-};
-
-export const checkCreatorHealth = async (): Promise<boolean> => {
-  try {
-    const response = await axios.get(`${CREATOR_API.replace('/api', '')}/health`);
-    return response.status === 200;
-  } catch (error) {
-    console.error('Creator service health check failed:', error);
+    console.error('API Gateway health check failed:', error);
     return false;
   }
 };
@@ -163,5 +147,15 @@ export const getDifficulties = async (): Promise<{id: string, name: string}[]> =
 
 export const submitQuestion = async (question: Omit<Question, 'id' | 'createdAt'>): Promise<Question> => {
   const response = await creatorApiClient.post('/create', question);
+  return response.data;
+};
+
+export const saveDraft = async (question: Partial<Question>): Promise<Question> => {
+  const response = await creatorApiClient.post('/drafts', question);
+  return response.data;
+};
+
+export const getDrafts = async (): Promise<Question[]> => {
+  const response = await creatorApiClient.get('/drafts');
   return response.data;
 };

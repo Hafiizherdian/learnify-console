@@ -7,7 +7,8 @@
     "start:dashboard": "cd dashboard && npm start",
     "start:questions": "cd questions && npm start",
     "start:creator": "cd creator && npm start",
-    "start:all": "concurrently \"npm run start:dashboard\" \"npm run start:questions\" \"npm run start:creator\"",
+    "start:api-gateway": "cd api-gateway && npm start",
+    "start:all": "concurrently \"npm run start:dashboard\" \"npm run start:questions\" \"npm run start:creator\" \"npm run start:api-gateway\"",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down"

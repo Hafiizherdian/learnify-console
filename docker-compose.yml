@@ -2,6 +2,27 @@
 version: '3.8'
 
 services:
+  api-gateway:
+    build: ./server/api-gateway
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server/api-gateway:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DASHBOARD_SERVICE_URL=http://dashboard-service:3001
+      - QUESTIONS_SERVICE_URL=http://questions-service:3002
+      - CREATOR_SERVICE_URL=http://creator-service:3003
+    networks:
+      - learnify-network
+    depends_on:
+      - dashboard-service
+      - questions-service
+      - creator-service
+    restart: unless-stopped
+
   dashboard-service:
     build: ./server/dashboard
     ports:
@@ -58,15 +79,12 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-      - VITE_DASHBOARD_API=http://localhost:3001/api/dashboard
-      - VITE_QUESTIONS_API=http://localhost:3002/api/questions
-      - VITE_CREATOR_API=http://localhost:3003/api
+      - VITE_API_GATEWAY=http://localhost:3000/api
     networks:
       - learnify-network
     depends_on:
-      - dashboard-service
-      - questions-service
-      - creator-service
+      - api-gateway
+    restart: unless-stopped
 
 networks:
   learnify-network:

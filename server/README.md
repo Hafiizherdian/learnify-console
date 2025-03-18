@@ -5,31 +5,40 @@
 
 Proyek ini mengimplementasikan arsitektur microservices dengan:
 
-1. **Dashboard Service** (port 3001)
+1. **API Gateway** (port 3000)
+   - Single entry point untuk semua API requests
+   - Routing ke microservices yang sesuai
+   - Load balancing dan service discovery
+   - API endpoint: `http://localhost:3000/api/*`
+
+2. **Dashboard Service** (port 3001)
    - Menyediakan data statistik dan analitik untuk dashboard
    - API endpoint: `http://localhost:3001/api/dashboard/*`
    - Independen dan dapat di-deploy secara terpisah
+   - Memiliki database sendiri
 
-2. **Question Bank Service** (port 3002)
+3. **Question Bank Service** (port 3002)
    - Mengelola penyimpanan dan pengambilan data pertanyaan
    - API endpoint: `http://localhost:3002/api/questions`
    - Memiliki database sendiri (file JSON)
    - Independen dan dapat di-deploy secara terpisah
 
-3. **Question Creator Service** (port 3003)
+4. **Question Creator Service** (port 3003)
    - Menangani pembuatan pertanyaan baru
+   - Menyimpan draft pertanyaan dalam database sendiri
    - API endpoint: `http://localhost:3003/api/*`
    - Berkomunikasi dengan Question Bank service melalui API
    - Independen dan dapat di-deploy secara terpisah
 
-4. **Frontend** (port 8080)
-   - Aplikasi React yang berkomunikasi dengan semua microservices melalui API
+5. **Frontend** (port 8080)
+   - Aplikasi React yang berkomunikasi dengan API Gateway
    - Menggunakan environment variables untuk konfigurasi endpoint API
 
 ## Prinsip Microservices yang Diimplementasikan
 
+- **API Gateway Pattern**: Single entry point untuk semua requests
 - **Deployment Independen**: Setiap layanan dapat di-deploy secara terpisah
-- **Database Terpisah**: Setiap layanan dapat memiliki penyimpanan data sendiri
+- **Database per Service**: Setiap layanan memiliki penyimpanan data sendiri
 - **Komunikasi melalui API**: Layanan berkomunikasi menggunakan REST API
 - **Isolasi**: Tidak ada ketergantungan kode antar layanan, hanya melalui API
 - **Containerization**: Setiap layanan di-Dockerize untuk isolasi lingkungan
@@ -64,6 +73,11 @@ docker-compose down
 ### Instalasi dan Menjalankan Setiap Layanan
 
 ```bash
+# API Gateway
+cd server/api-gateway
+npm install
+npm start
+
 # Dashboard Service
 cd server/dashboard
 npm install
@@ -101,9 +115,15 @@ npm run start:all
 
 ### Frontend (.env)
 ```
-VITE_DASHBOARD_API=http://localhost:3001/api/dashboard
-VITE_QUESTIONS_API=http://localhost:3002/api/questions
-VITE_CREATOR_API=http://localhost:3003/api
+VITE_API_GATEWAY=http://localhost:3000/api
+```
+
+### API Gateway
+```
+PORT=3000
+DASHBOARD_SERVICE_URL=http://dashboard-service:3001
+QUESTIONS_SERVICE_URL=http://questions-service:3002
+CREATOR_SERVICE_URL=http://creator-service:3003
 ```
 
 ### Creator Service
@@ -114,15 +134,17 @@ QUESTIONS_SERVICE_URL=http://questions-service:3002 (in Docker) or http://localh
 
 ## API Endpoints
 
-### Dashboard Service
+### API Gateway
+- `GET /health` - Health check for the API Gateway
+- All other endpoints are proxied to respective services
 
+### Dashboard Service
 - `GET /api/dashboard/stats` - Mendapatkan statistik dashboard
 - `GET /api/dashboard/activity` - Mendapatkan data aktivitas
 - `GET /api/dashboard/categories` - Mendapatkan distribusi kategori
 - `GET /api/dashboard/recent-questions` - Mendapatkan pertanyaan terbaru
 
 ### Question Bank Service
-
 - `GET /api/questions` - Mendapatkan semua pertanyaan
 - `GET /api/questions/:id` - Mendapatkan pertanyaan berdasarkan ID
 - `POST /api/questions` - Membuat pertanyaan baru
@@ -130,7 +152,8 @@ QUESTIONS_SERVICE_URL=http://questions-service:3002 (in Docker) or http://localh
 - `DELETE /api/questions/:id` - Menghapus pertanyaan
 
 ### Question Creator Service
-
 - `POST /api/create` - Membuat pertanyaan baru (proxy ke Question Bank)
 - `GET /api/categories` - Mendapatkan daftar kategori yang tersedia
 - `GET /api/difficulties` - Mendapatkan daftar tingkat kesulitan yang tersedia
+- `POST /api/drafts` - Menyimpan draft pertanyaan
+- `GET /api/drafts` - Mendapatkan semua draft pertanyaan
