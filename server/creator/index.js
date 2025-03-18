@@ -11,25 +11,11 @@ const QUESTIONS_SERVICE_URL = process.env.QUESTIONS_SERVICE_URL || 'http://quest
 app.use(cors());
 app.use(express.json());
 
-// Health check middleware to verify questions service connectivity
-const checkQuestionsServiceHealth = async (req, res, next) => {
-  try {
-    await axios.get(`${QUESTIONS_SERVICE_URL}/health`);
-    next();
-  } catch (error) {
-    console.error('Questions service health check failed:', error.message);
-    res.status(503).json({ 
-      message: 'Questions service unavailable',
-      error: 'Service dependency unavailable'
-    });
-  }
-};
-
-// Endpoint untuk menyimpan pertanyaan baru (proxy ke question bank service)
-app.post('/api/create', checkQuestionsServiceHealth, async (req, res) => {
+// Create question via Question Service API
+app.post('/api/questions', async (req, res) => {
   try {
     console.log(`Sending new question to ${QUESTIONS_SERVICE_URL}/api/questions`);
-    // Forward request to Question Bank service
+    // Make API call to Question Bank service
     const response = await axios.post(`${QUESTIONS_SERVICE_URL}/api/questions`, req.body);
     res.status(201).json(response.data);
   } catch (error) {
@@ -42,23 +28,23 @@ app.post('/api/create', checkQuestionsServiceHealth, async (req, res) => {
   }
 });
 
-// Endpoint untuk mendapatkan kategori yang tersedia
+// Get categories from local data service
 app.get('/api/categories', (req, res) => {
   res.json(dataService.getCategories());
 });
 
-// Endpoint untuk mendapatkan tingkat kesulitan yang tersedia
+// Get difficulties from local data service
 app.get('/api/difficulties', (req, res) => {
   res.json(dataService.getDifficulties());
 });
 
-// Save draft question in creator service
+// Save draft question in creator service's own database
 app.post('/api/drafts', (req, res) => {
   const draft = dataService.saveDraft(req.body);
   res.status(201).json(draft);
 });
 
-// Get all draft questions
+// Get all draft questions from creator's database
 app.get('/api/drafts', (req, res) => {
   res.json(dataService.getDrafts());
 });

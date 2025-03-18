@@ -22,25 +22,35 @@ services:
       - questions-service
       - creator-service
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   dashboard-service:
     build: ./server/dashboard
-    ports:
-      - "3001:3001"
     volumes:
       - ./server/dashboard:/app
+      - ./server/dashboard/data:/app/data
       - /app/node_modules
     environment:
       - NODE_ENV=development
       - PORT=3001
+      - DB_PATH=/app/data/dashboard.json
     networks:
       - learnify-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   questions-service:
     build: ./server/questions
-    ports:
-      - "3002:3002"
     volumes:
       - ./server/questions:/app
       - ./server/questions/data:/app/data
@@ -52,23 +62,35 @@ services:
     networks:
       - learnify-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
   creator-service:
     build: ./server/creator
-    ports:
-      - "3003:3003"
     volumes:
       - ./server/creator:/app
+      - ./server/creator/data:/app/data
       - /app/node_modules
     environment:
       - NODE_ENV=development
       - PORT=3003
       - QUESTIONS_SERVICE_URL=http://questions-service:3002
+      - DB_PATH=/app/data/creator.json
     networks:
       - learnify-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     depends_on:
       - questions-service
-    restart: unless-stopped
 
   frontend:
     build: .

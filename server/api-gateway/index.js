@@ -20,14 +20,14 @@ const proxyConfigs = [
     path: '/api/dashboard',
     target: DASHBOARD_SERVICE_URL,
     pathRewrite: {
-      '^/api/dashboard': '/api/dashboard'
+      '^/api/dashboard': '/api'
     }
   },
   {
     path: '/api/questions',
     target: QUESTIONS_SERVICE_URL,
     pathRewrite: {
-      '^/api/questions': '/api/questions'
+      '^/api/questions': '/api'
     }
   },
   {
