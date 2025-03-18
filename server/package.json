@@ -4,16 +4,13 @@
   "version": "1.0.0",
   "description": "Backend microservices untuk aplikasi Learnify",
   "scripts": {
-    "start:dashboard": "node dashboard/index.js",
-    "start:questions": "node questions/index.js",
-    "start:creator": "node creator/index.js",
-    "start:all": "concurrently \"npm run start:dashboard\" \"npm run start:questions\" \"npm run start:creator\""
-  },
-  "dependencies": {
-    "axios": "^1.6.2",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "uuid": "^9.0.0"
+    "start:dashboard": "cd dashboard && npm start",
+    "start:questions": "cd questions && npm start",
+    "start:creator": "cd creator && npm start",
+    "start:all": "concurrently \"npm run start:dashboard\" \"npm run start:questions\" \"npm run start:creator\"",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"

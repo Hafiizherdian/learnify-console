@@ -1,10 +1,10 @@
 
 import axios from 'axios';
 
-// API URLs untuk microservices
-const DASHBOARD_API = 'http://localhost:3001/api/dashboard';
-const QUESTIONS_API = 'http://localhost:3002/api/questions';
-const CREATOR_API = 'http://localhost:3003/api';
+// API URLs untuk microservices dengan fallback ke localhost
+const DASHBOARD_API = process.env.DASHBOARD_API || 'http://localhost:3001/api/dashboard';
+const QUESTIONS_API = process.env.QUESTIONS_API || 'http://localhost:3002/api/questions';
+const CREATOR_API = process.env.CREATOR_API || 'http://localhost:3003/api';
 
 // Interface untuk tipe data
 export interface Option {

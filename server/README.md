@@ -1,9 +1,9 @@
 
 # Microservices Backend untuk Learnify
 
-## Struktur Microservices
+## Arsitektur Microservices
 
-Proyek ini terdiri dari tiga microservices independen:
+Proyek ini mengimplementasikan arsitektur microservices dengan:
 
 1. **Dashboard Service** (port 3001)
    - Menyediakan data statistik dan analitik untuk dashboard
@@ -17,13 +17,56 @@ Proyek ini terdiri dari tiga microservices independen:
    - Menangani pembuatan pertanyaan baru
    - API endpoint: `http://localhost:3003/api/*`
 
-## Cara Menjalankan
+4. **Frontend** (port 8080)
+   - Aplikasi React yang berkomunikasi dengan semua microservices melalui API
+
+## Cara Menjalankan dengan Docker
+
+### Prasyarat
+- Docker dan Docker Compose
+
+### Menjalankan dengan Docker Compose
+
+```bash
+# Build semua container
+docker-compose build
+
+# Jalankan semua container
+docker-compose up
+
+# Atau jalankan di background
+docker-compose up -d
+
+# Hentikan semua container
+docker-compose down
+```
+
+## Cara Menjalankan Tanpa Docker
 
 ### Prasyarat
 - Node.js (v14 atau lebih tinggi)
 - npm (v6 atau lebih tinggi)
 
-### Instalasi
+### Instalasi dan Menjalankan Setiap Layanan
+
+```bash
+# Dashboard Service
+cd dashboard
+npm install
+npm start
+
+# Question Bank Service
+cd questions
+npm install
+npm start
+
+# Question Creator Service
+cd creator
+npm install
+npm start
+```
+
+### Menjalankan semua service sekaligus dari root:
 
 ```bash
 # Masuk ke direktori server
@@ -31,27 +74,9 @@ cd server
 
 # Install dependencies
 npm install
-```
 
-### Menjalankan Microservices
-
-#### Menjalankan semua service sekaligus:
-
-```bash
+# Jalankan semua service
 npm run start:all
-```
-
-#### Menjalankan service secara terpisah:
-
-```bash
-# Dashboard Service
-npm run start:dashboard
-
-# Question Bank Service
-npm run start:questions
-
-# Question Creator Service
-npm run start:creator
 ```
 
 ## API Endpoints

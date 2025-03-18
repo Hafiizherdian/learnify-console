@@ -1,0 +1,53 @@
+
+version: '3.8'
+
+services:
+  dashboard-service:
+    build: ./server/dashboard
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./server/dashboard:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+
+  questions-service:
+    build: ./server/questions
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./server/questions:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+
+  creator-service:
+    build: ./server/creator
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./server/questions:/app/questions
+      - ./server/creator:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+    depends_on:
+      - questions-service
+
+  frontend:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - dashboard-service
+      - questions-service
+      - creator-service

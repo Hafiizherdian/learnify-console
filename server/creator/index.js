@@ -6,6 +6,7 @@ const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3003;
+const QUESTIONS_SERVICE_URL = process.env.QUESTIONS_SERVICE_URL || 'http://localhost:3002';
 
 app.use(cors());
 app.use(express.json());
@@ -14,7 +15,7 @@ app.use(express.json());
 app.post('/api/create', async (req, res) => {
   try {
     // Forward request to Question Bank service
-    const response = await axios.post('http://localhost:3002/api/questions', req.body);
+    const response = await axios.post(`${QUESTIONS_SERVICE_URL}/api/questions`, req.body);
     res.status(201).json(response.data);
   } catch (error) {
     console.error('Error creating question:', error);
@@ -54,4 +55,5 @@ app.get('/api/difficulties', (req, res) => {
 // Server start
 app.listen(PORT, () => {
   console.log(`Question Creator Microservice berjalan di port ${PORT}`);
+  console.log(`Connected to Question Bank service at: ${QUESTIONS_SERVICE_URL}`);
 });
