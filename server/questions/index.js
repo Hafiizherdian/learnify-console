@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
@@ -7,28 +6,44 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'questions.json');
 
 app.use(cors());
 app.use(express.json());
 
-// Cek apakah file database ada, jika tidak, buat file kosong
-const DB_PATH = path.join(__dirname, 'questions.json');
-if (!fs.existsSync(DB_PATH)) {
-  fs.writeFileSync(DB_PATH, JSON.stringify([]));
+// Ensure data directory exists
+const dataDir = path.dirname(DB_PATH);
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Fungsi untuk membaca dari database
+// Check if database file exists, if not, create an empty file
+if (!fs.existsSync(DB_PATH)) {
+  fs.writeFileSync(DB_PATH, JSON.stringify([]));
+  console.log(`Created new questions database at ${DB_PATH}`);
+}
+
+// Function to read from database
 const readQuestions = () => {
-  const data = fs.readFileSync(DB_PATH, 'utf-8');
-  return JSON.parse(data);
+  try {
+    const data = fs.readFileSync(DB_PATH, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading questions database:', error);
+    return [];
+  }
 };
 
-// Fungsi untuk menulis ke database
+// Function to write to database
 const writeQuestions = (questions) => {
-  fs.writeFileSync(DB_PATH, JSON.stringify(questions, null, 2));
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(questions, null, 2));
+  } catch (error) {
+    console.error('Error writing to questions database:', error);
+  }
 };
 
-// Routes untuk Question Bank Microservice
+// Routes for Question Bank Microservice
 app.get('/api/questions', (req, res) => {
   const questions = readQuestions();
   res.json(questions);
@@ -90,7 +105,13 @@ app.delete('/api/questions/:id', (req, res) => {
   res.json({ message: 'Pertanyaan berhasil dihapus' });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'question-bank' });
+});
+
 // Server start
 app.listen(PORT, () => {
-  console.log(`Question Bank Microservice berjalan di port ${PORT}`);
+  console.log(`Question Bank Microservice running on port ${PORT}`);
+  console.log(`Using database at: ${DB_PATH}`);
 });

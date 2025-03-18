@@ -14,6 +14,7 @@ services:
       - PORT=3001
     networks:
       - learnify-network
+    restart: unless-stopped
 
   questions-service:
     build: ./server/questions
@@ -21,12 +22,15 @@ services:
       - "3002:3002"
     volumes:
       - ./server/questions:/app
+      - ./server/questions/data:/app/data
       - /app/node_modules
     environment:
       - NODE_ENV=development
       - PORT=3002
+      - DB_PATH=/app/data/questions.json
     networks:
       - learnify-network
+    restart: unless-stopped
 
   creator-service:
     build: ./server/creator
@@ -43,6 +47,7 @@ services:
       - learnify-network
     depends_on:
       - questions-service
+    restart: unless-stopped
 
   frontend:
     build: .

@@ -1,7 +1,5 @@
-
 const express = require('express');
 const cors = require('cors');
-const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 
 const app = express();
@@ -11,17 +9,32 @@ const QUESTIONS_SERVICE_URL = process.env.QUESTIONS_SERVICE_URL || 'http://local
 app.use(cors());
 app.use(express.json());
 
-// Endpoint untuk menyimpan pertanyaan baru (proxy ke question bank service)
-app.post('/api/create', async (req, res) => {
+// Health check middleware to verify questions service connectivity
+const checkQuestionsServiceHealth = async (req, res, next) => {
   try {
-    console.log(`Mengirim pertanyaan baru ke ${QUESTIONS_SERVICE_URL}/api/questions`);
+    await axios.get(`${QUESTIONS_SERVICE_URL}/health`);
+    next();
+  } catch (error) {
+    console.error('Questions service health check failed:', error.message);
+    res.status(503).json({ 
+      message: 'Questions service unavailable',
+      error: 'Service dependency unavailable'
+    });
+  }
+};
+
+// Endpoint untuk menyimpan pertanyaan baru (proxy ke question bank service)
+app.post('/api/create', checkQuestionsServiceHealth, async (req, res) => {
+  try {
+    console.log(`Sending new question to ${QUESTIONS_SERVICE_URL}/api/questions`);
     // Forward request to Question Bank service
     const response = await axios.post(`${QUESTIONS_SERVICE_URL}/api/questions`, req.body);
     res.status(201).json(response.data);
   } catch (error) {
     console.error('Error creating question:', error);
-    res.status(500).json({ 
-      message: 'Gagal membuat pertanyaan', 
+    const statusCode = error.response?.status || 500;
+    res.status(statusCode).json({ 
+      message: 'Failed to create question', 
       error: error.message 
     });
   }
@@ -53,8 +66,19 @@ app.get('/api/difficulties', (req, res) => {
   res.json(difficulties);
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    service: 'question-creator',
+    dependencies: {
+      questionsService: QUESTIONS_SERVICE_URL
+    }
+  });
+});
+
 // Server start
 app.listen(PORT, () => {
-  console.log(`Question Creator Microservice berjalan di port ${PORT}`);
-  console.log(`Terhubung ke Question Bank service di: ${QUESTIONS_SERVICE_URL}`);
+  console.log(`Question Creator Microservice running on port ${PORT}`);
+  console.log(`Connected to Question Bank service at: ${QUESTIONS_SERVICE_URL}`);
 });

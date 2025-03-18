@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
@@ -86,7 +85,12 @@ app.get('/api/dashboard/recent-questions', (req, res) => {
   res.json(recentQuestions);
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'dashboard' });
+});
+
 // Server start
 app.listen(PORT, () => {
-  console.log(`Dashboard Microservice berjalan di port ${PORT}`);
+  console.log(`Dashboard Microservice running on port ${PORT}`);
 });
